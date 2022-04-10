@@ -19,7 +19,7 @@ A lot of the following tests for both stationarity and cointegration are known a
 
 1) Null Hypothsis - This is our initial assumption. What we first assume to be true: the time series is stationary
 2) Challenger Hypothesis - This is the challange to our null hypothesis in this case it is the just the negation : the time series is not stationary
-3) Test Statistic - A observation we can draw of the data
+3) Test Statistic - A observation we can draw of the data *also called the trace statistic*
 4) P-value - The probability of observing the test statistic
 
 Usually you will know the probability distribution and be able to calcualte the the p-value for a given observation. But since we are using a module with abtracts away the manual calculation, we have to do a little interpolation to figure out what our test statistic is trying to tell us.
@@ -30,8 +30,9 @@ Code Examples for image 1
 ```
 from statsmodels.tsa.stattools import adfuller
 
+adfuller(plot1)
+adfuller(plot2)
 ```
-
 
 ```
 Output
@@ -58,13 +59,33 @@ Plot 2:
  513.3832739948602)
 ```
 
+Ok lets break down the values returned by the function adfuller(). The first value in the tuple is the trace statistic. In the case of plot 1 is it aprox -0.43996. 
+The second value in the tuple is the p-value. 
+The third value is the number of lags used for the calculation - the lookback window
+The fourth value is the number of observations used for the ADF regression and calculation
+
+For our purposes, we can ignore the 2nd,3rd and 4th values. We care about the trace statistic and the critical values for our confidence interval (the tuple). They tell us the percent change that our test statistic was observed given that the time series is NOT stationary. Meaning the null hypothesis is that the time series is *NOT* stationary and the challenger hypothesis is that it is stationary. 
+
+Therfore, what the output for plot 1 is telling us is that there is a 1% change of our trace statistic being -3.44 if the plot is not stationary. This essentially means that is our trace statistic is close to -3.44 we can be pretty certain that our time series is stationary. Ofcourse is follows that there is a 5% change of test statistic = -2.86 and our time series not being stationary.
+
+As a rule of thumb,  anything < 5% means we can be pretty certain. Another thing you might have already noticed is that the trace statistics get smaller as our confidence of stationarity increase. Thus, *in this case*, we can interpret a smaller trace statistic as better evidence for us if we want the time series to be stationary. It natrually follows that if our test statistic = -100 then there is a <<<<< 1% chance that our time series is not stationary.
+
+
+If trace stat at 1% <  trace stat at 5% < trace stat at 10% -> the smaller the value the more likely that the null hypothesis is wrong
+BUT
+if If trace stat at 1%  > trace stat at 5% > trace stat at 10% -> the bigger the value the more likely that the null hypothesis is wrong
+
+By this logic, we can say that plot 2 is "more stationary" than plot 1, but neither are truly stationary by defintion.(Don't say this is real life, math people will murder you.)
+
 
 Now consider a stationary plot
 ![A stationary plot](/images/stationary%20plot%20example.png)
 
 Code Examples for image 1
 ```
-Code
+from statsmodels.tsa.stattools import adfuller
+
+adfuller(plot3)
 ```
 
 ```
@@ -78,6 +99,8 @@ Output
   '10%': -2.5688400274762397},
  -654.0838685347887)
 ```
+
+
 
 ### Hurst Exponent Variance Ratio
 
