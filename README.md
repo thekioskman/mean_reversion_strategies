@@ -59,9 +59,12 @@ Plot 2:
  513.3832739948602)
 ```
 
-Ok lets break down the values returned by the function adfuller(). The first value in the tuple is the trace statistic. In the case of plot 1 is it aprox -0.43996. 
+Ok lets break down the values returned by the function adfuller(). The first value in the tuple is the trace statistic. In the case of plot 1 it is aprox -0.43996. 
+<br>
 The second value in the tuple is the p-value. 
+<br>
 The third value is the number of lags used for the calculation - the lookback window
+<br>
 The fourth value is the number of observations used for the ADF regression and calculation
 
 For our purposes, we can ignore the 2nd,3rd and 4th values. We care about the trace statistic and the critical values for our confidence interval (the tuple). They tell us the percent change that our test statistic was observed given that the time series is NOT stationary. Meaning the null hypothesis is that the time series is *NOT* stationary and the challenger hypothesis is that it is stationary. 
