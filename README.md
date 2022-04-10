@@ -25,7 +25,7 @@ A lot of the following tests for both stationarity and cointegration are known a
 Usually you will know the probability distribution and be able to calcualte the the p-value for a given observation. But since we are using a module with abtracts away the manual calculation, we have to do a little interpolation to figure out what our test statistic is trying to tell us.
 ### Augmented Dicky Fuller Test
 For this example, consider the following graphs, and thier results for the Augmented Dicky Fully test
-<img>
+![two non stationary plots](/images/staionary%20example.png)
 Code Examples for image 1
 ```
 from statsmodels.tsa.stattools import adfuller
@@ -60,7 +60,7 @@ Plot 2:
 
 
 Now consider a stationary plot
-<img>
+![A stationary plot](/images/stationary%20plot%20example.png)
 
 Code Examples for image 1
 ```
