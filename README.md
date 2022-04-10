@@ -12,12 +12,70 @@ We wont every find time series that are perfectly stationaries in the world of s
 ![types of stationarity image](/images/medium%20article%20image.png)
 For an in-depth look at stationarity concepts (also courtesy of image) - https://towardsdatascience.com/stationarity-in-time-series-analysis-90c94f27322
 
-Notice that if the mean value of our time series is variable that doesnt really matter to us (since we can calculate the mean with a moving average). What is important is that the time series "always go back to the mean" in other words has a semi-constant variance. In the following, we will present a variety of ways to dertermine whether a time series is stationary or not. 
+Notice that even if the mean value of our time series is variable, that doesnt really matter to us (since we can calculate the mean with a moving average). What is important is that the time series "always go back to the mean" in other words has a semi-constant variance. In the following, we will present a variety of ways to dertermine whether a time series is stationary or not. We will not go into exactly how these tests work, but rather how to anaylze their results. For these statistical tests we will be using the statsmodels library.
 
+### What is a Hypothesis Test?
+A lot of the following tests for both stationarity and cointegration are known as hypothesis tests. Essentially a statistical way for us to asses the probability of a certain assumption, in this case whether something is stationary or not. To be able to interpret the follwing tests you need to understand how a hypothesis test works.
+
+1) Null Hypothsis - This is our initial assumption. What we first assume to be true: the time series is stationary
+2) Challenger Hypothesis - This is the challange to our null hypothesis in this case it is the just the negation : the time series is not stationary
+3) Test Statistic - A observation we can draw of the data
+4) P-value - The probability of observing the test statistic
+
+Usually you will know the probability distribution and be able to calcualte the the p-value for a given observation. But since we are using a module with abtracts away the manual calculation, we have to do a little interpolation to figure out what our test statistic is trying to tell us.
 ### Augmented Dicky Fuller Test
+For this example, consider the following graphs, and thier results for the Augmented Dicky Fully test
+
 
 ```
-Code Example
+Code Example for non stationary plots
+from statsmodels.tsa.stattools import adfuller
+
+```
+
+
+```
+Output
+Plot 1:
+(-0.439959559222557,
+ 0.9032101486279716,
+ 7,
+ 749,
+ {'1%': -3.439110818166223,
+  '5%': -2.8654065210185795,
+  '10%': -2.568828945705979},
+ -143.3804208871445)
+
+
+Plot 2:
+(-0.7982895406439698,
+ 0.8196239858542839,
+ 7,
+ 749,
+ {'1%': -3.439110818166223,
+  '5%': -2.8654065210185795,
+  '10%': -2.568828945705979},
+ 513.3832739948602)
+```
+
+
+Now consider a stationary plot
+<img>
+
+```
+Code
+```
+
+```
+Output
+(-5.3391482290364545,
+ 4.540668357784293e-06,
+ 11,
+ 745,
+ {'1%': -3.4391580196774494,
+  '5%': -2.8654273226340554,
+  '10%': -2.5688400274762397},
+ -654.0838685347887)
 ```
 
 ### Hurst Exponent Variance Ratio
