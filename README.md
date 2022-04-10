@@ -40,7 +40,7 @@ Here I test out some of the mean reversion strategies found in algorithmic tradi
 ### Standard Deviation
 All of our entry and exit signals will be based on the standard deviation of the current price to the mean. This makes logical sense if we consider the fact that we have essentially just combined a bunch of time series in a partical way to generate a stationary time series. Since our time series is stationary, we "know it will revert back to its mean value". Therefore, when the standard deviation of the current price (for our generated time series) from the mean is >> 0 we should short our conbination of securities because the price of our combination is likely to go down toward the mean. When the standard deviation is << 0 we should be long on our combination because the prcie (value) or our combination of securities is likely to go back up toward the mean. 
 
-<img src="https://render.githubusercontent.com/render/math?math=\sigma = \frac{\sum_N (x_i - \mu)}{N}">
+<img src="https://render.githubusercontent.com/render/math?math=\sigma = \frac{\sum^i_N (x_i - \mu)}{N}">
 
 
 ### Standard Deviation - Linear Scaling
