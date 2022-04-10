@@ -5,20 +5,36 @@ Here I test out some of the mean reversion strategies found in algorithmic tradi
 To understand the demo strategies i will present, lets go over some of the core mathematical princeples that the algorithmis will use. We will use the examples from the strategies themselves to illustrate the concepts and by the end you will be able to peice together a mean reverting strategy from scatch.
 
 ## Stationarity and Mean Reversion
+The core concept governing mean reversion strategies is the notion of stationarity. If you look into stationarity from a mathemicatcal perspective you may come across many complex defitions that are hard to visualize. In the simplest terms, we want a time series to be stationary in the sense that we know that the value of the time series will oscillate around the mean value in a "predicatable way". 
 
+We wont every find time series that are perfectly stationaries in the world of securites trading, but our preference is for our time series to have a constant(enough) variance about the mean value.
+
+![types of stationarity image](/images/medium%20article%20image.png)
+For an in-depth look at stationarity concepts (also courtesy of image) - https://towardsdatascience.com/stationarity-in-time-series-analysis-90c94f27322
+
+Notice that if the mean value of our time series is variable that doesnt really matter to us (since we can calculate the mean with a moving average). What is important is that the time series "always go back to the mean" in other words has a semi-constant variance. In the following, we will present a variety of ways to dertermine whether a time series is stationary or not. 
 
 ### Augmented Dicky Fuller Test
 
+```
+Code Example
+```
 
 ### Hurst Exponent Variance Ratio
 
-
+```
+Code Example
+```
 
 ## Cointegartion and Pair Trading with Mean Reversion
 
-
+```
+Code Example
+```
 ### Cointegrated Augmented Dicky Fuller Test
-
+```
+Code Example
+```
 
 
 ### Johansen Test
