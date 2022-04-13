@@ -219,12 +219,23 @@ Another method we can use to get the hedge ratio between *two* stocks is to use 
 
 In theory, the actual price point values of our time series should be close to, and hover around the value of the least squares regression we ran. (Since our time series value conintegrate). This means that we expect the price to mean revert around this regression line. Thefore, to generate a stationary series we use the following equation.
 
+
+
 <img src="https://render.githubusercontent.com/render/math?math=EWA(t) = slope*EWC(t)">
 
 And therefore
 <img src="https://render.githubusercontent.com/render/math?math=stationary(t) = EWA(t) - slope*EWC(t)">
 
 Now the idea here is that since our price values for EWA and EWC oscilate around the regression line EWA = slope*EWC, the value of the series EWA - slope*EWC should oscilate around 0. Essentially generating a mean revering time series. 
+
+```
+from statsmodels.regression.linear_model import OLS as least_sqaures_regression
+
+linear_reg = least_sqaures_regression(ewc["Open"] , ewa["Open"])
+results = linear_reg.fit()
+slope = results.params[0] 
+```
+Calling results.params[0] gives us the slope value. However, you should consult the docs for the exact returns values. As your model might also spit out an intercept value.
 
 <br>
 <br>
@@ -236,11 +247,24 @@ So the notion of a OLS Regression generating a constant hedge ratio was just a p
 ![Rolling Regression & Linear Regression Comparison](./images/Linear%20Regession%20Hedge%20Ratio%20Example.png)
 
 
+As you can see the results of the rolling regression are much better than that of the regular regression. For the rolling regression in this example I used a window of 20 days, although it is often good to experiment around and see what works best for your purposes.
+
+```
+from statsmodels.regression.rolling import RollingOLS
+
+rolling_regerssion = RollingOLS(ewc["Open"], ewa["Open"], window=20)
+rolling_results = rolling_regerssion.fit()
+slope_function_20 = rolling_results.params
+slope_function_20 = slope_function_20.rename(columns={"Open" : "Slope"})
+slope_function_20
+```
 
 
-
+### A note of using Simple Moving Averages
 
 ## Johansen Test (Advanced)
+
+
 
 ## Kalman Filter (Advanced)
 Gives us:
