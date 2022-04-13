@@ -169,7 +169,7 @@ In breif, we essentially just want to see a result >= 1 on the variance ratio te
 Cointegration, for out purposes is just the process of finding a linear combination of time series that will (linearly combine to) form a stationary (mean reverting) time series. It is rare(impossible) to find any stock or dervative's price that will be stationary for any meaningful amount of time. Therefore, we need to be able to snythesis a stationary time series using a combination of stocks, or other securities. The following tests will tell you if two or more time series do cointegrate (linearly combine to form a stationary time series) and give your thier hedge ratio
 
 
-<img src="https://render.githubusercontent.com/render/math?math= stationary(t) = a*timeSeries1(t) + b*timeSeries2(t) + c*timeSeries3(t) +... n**timeSeriesn(t)">
+<img src="https://render.githubusercontent.com/render/math?math=stationary(t) = a*timeSeries1(t) + b*timeSeries2(t) + c*timeSeries3(t) +... n**timeSeriesn(t)">
 Note that this is for all t such that t is in the bounds of the window in the time series we are analyzing.
 
 ## Determining the Hedge Ratio - Linear Combination
@@ -189,11 +189,10 @@ cadf_test(input_data["GLD"], input_data["USO"] )
 ```
 Output
 ----------------------
-
 (-2.272435700404821,
  0.3873847286679448,
  array([-3.89933891, -3.33774648, -3.0455719 ]))
- 
+
 ```
 
 
