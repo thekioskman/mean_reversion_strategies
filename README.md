@@ -61,13 +61,15 @@ Plot 2:
  513.3832739948602)
 ```
 
-Ok lets break down the values returned by the function adfuller(). The first value in the tuple is the trace statistic. In the case of plot 1 it is aprox -0.43996. 
+Ok lets break down the values returned by the function adfuller(). The first value in the tuple is the trace statistic. 
 <br>
-The second value in the tuple is the p-value. 
+1) In the case of plot 1 it is aprox -0.43996. 
+
+2) The second value in the tuple is the p-value. 
 <br>
-The third value is the number of lags used for the calculation - the lookback window
+3) The third value is the number of lags used for the calculation - the lookback window
 <br>
-The fourth value is the number of observations used for the ADF regression and calculation
+4) The fourth value is the number of observations used for the ADF regression and calculation
 
 For our purposes, we can ignore the 2nd , 3rd and 4th values. We care about the trace statistic and the critical values for our confidence interval (the tuple). They tell us the percent change that our test statistic was observed given that the time series is NOT stationary. Meaning the null hypothesis is that the time series is *NOT* stationary and the challenger hypothesis is that it is stationary. 
 
@@ -106,7 +108,7 @@ Output
  -654.0838685347887)
 ```
 
-Note that again the smaller the value of the trace statistic, the more likely our time series is stationary. Since our trace stat of -5.34 < -3.44 it follow that there is a < 1% chance our time series is not stationary. In other words... it is stationary (lol).
+Note that again the smaller the value of the trace statistic, the more likely our time series is stationary. Since our trace stat of -5.34 < -3.44 it follow that there is a < 1% chance our time series is not stationary. In other words... it is stationary (lol). Another things to notice is that the second value 4.5e-06 is our p-value, which we can look at as the probability that we observed our test statistic given the null hypothesis is true. Therefore, we can roughly say there is a 0.00045% change that it is not stationary.
 
 ## Hurst Exponent & Variance Ratio Test
 The Hurst Exponent is another critera we can use to evaluate stationarity. The variance ratio test is just a hypothesis test to see how likely your calculated value of the hurst exponent is to be true since you are running the calculation on a finite dataset. (And more than likely just a subset of that finite dataset)
@@ -194,14 +196,19 @@ Output
  array([-3.89933891, -3.33774648, -3.0455719 ]))
 
 ```
-
+Here we notice that our trace statistic is greater than the 99, 95 and 90% confidence interval values. A glance at the p-value (0.39) indicates that there is a ~39% change the null hypothesis is false. Which is not strong enough evidence to say that the two time series will conintegrate. This test is fast, but it really does not tell us much.
 
 ## Johansen Test
+In practice, we always prefer the Johansen Test over the CADF test. The Johansen test can:
+1) Tell us if multiple (two or more) time series conintegrate
+2) It can also tell us the *constant* hedge ratios for all n time series we pass to it as inputs
 
 
 
 
 ## Linear Regression
+Another method we can use to get the hedge ratio between *two* stocks 
+
 
 ## Linear Regression with Moving Window
 
