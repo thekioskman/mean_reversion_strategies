@@ -73,12 +73,15 @@ Ok lets break down the values returned by the function adfuller(). The first val
 For our purposes, we can ignore the 2nd , 3rd and 4th values. We care about the trace statistic and the critical values for our confidence interval (the tuple). They tell us the percent change that our test statistic was observed given that the time series is NOT stationary. Meaning the null hypothesis is that the time series is *NOT* stationary and the challenger hypothesis is that it is stationary. 
 
 <br>
+<br>
 Therfore, what the output for plot 1 is telling us is that there is a 1% change of our trace statistic being -3.44 if the plot is not stationary. This essentially means that is our trace statistic is close to -3.44 we can be pretty certain that our time series is stationary. Ofcourse is follows that there is a 5% change of test statistic = -2.86 and our time series not being stationary.
 
 <br>
+<br>
 As a rule of thumb,  anything < 5% means we can be pretty certain. Another thing you might have already noticed is that the trace statistics get smaller as our confidence of stationarity increase. Thus, *in this case*, we can interpret a smaller trace statistic as better evidence for us if we want the time series to be stationary. It natrually follows that if our test statistic = -100 then there is a <<<<< 1% chance that our time series is not stationary.
 
-
+<br>
+<br>
 If trace stat at 1% <  trace stat at 5% < trace stat at 10% -> the smaller the value, the more likely that the null hypothesis is wrong
 <br>
 *BUT*
