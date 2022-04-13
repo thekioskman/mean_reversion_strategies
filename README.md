@@ -172,16 +172,12 @@ Cointegration, for out purposes is just the process of finding a linear combinat
 
 
 ## Cointegrated Augmented Dicky Fuller Test
-```
-Code Example
-```
+
 
 
 ## Johansen Test
 
-```
-Code Example
-```
+
 
 
 
