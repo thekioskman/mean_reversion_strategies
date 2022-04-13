@@ -129,8 +129,6 @@ def get_hurst_exponent(time_series, max_lag):
     reg = np.polyfit(np.log(lags), np.log(tau), 1)
 
     return reg[0]
-
-hurst = get_hurst_exponent(test_replicate["Plot2"])
 ```
 
 The important thing to note here is the value of the lags, it indicates how far back we want to look into our data. In practice it is often the case that securities prices are not always mean reverting or always trending. Their movment tends to change over the course of time, they may have periods of mean reversion or periods of trending. Therfore, the time window (including both the starting point and the lag value) in which we apply the calcuation of the hurst exponent can yeild very different results. In the above code, we start from the latest value and just look back max_lag units of time. 
