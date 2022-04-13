@@ -84,10 +84,12 @@ As a rule of thumb,  anything < 5% means we can be pretty certain. Another thing
 <br>
 If trace stat at 1% <  trace stat at 5% < trace stat at 10% -> the smaller the value, the more likely that the null hypothesis is wrong
 <br>
-*BUT*
+**BUT**
 <br>
 if If trace stat at 1%  > trace stat at 5% > trace stat at 10% -> the bigger the value, the more likely that the null hypothesis is wrong
 
+<br>
+<br>
 By this logic, we can say that plot 2 is "more stationary" than plot 1, but neither are truly stationary by defintion. (Don't say this is real life, math people will murder you.)
 
 
