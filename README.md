@@ -148,9 +148,9 @@ For information on the variance ratio test (as well as an overview of many of th
 import numpy as np
 
 def variance_ratio(ts, lag = 2):
-    """
+    '''
     Returns the variance ratio test result
-    """
+    '''
     # make sure we are working with an array, convert if necessary
     ts = np.asarray(ts)
     
@@ -169,16 +169,35 @@ In breif, we essentially just want to see a result >= 1 on the variance ratio te
 Cointegration, for out purposes is just the process of finding a linear combination of time series that will (linearly combine to) form a stationary (mean reverting) time series. It is rare(impossible) to find any stock or dervative's price that will be stationary for any meaningful amount of time. Therefore, we need to be able to snythesis a stationary time series using a combination of stocks, or other securities. The following tests will tell you if two or more time series do cointegrate (linearly combine to form a stationary time series) and give your thier hedge ratio
 
 
-## Determining the Hedge Ratio - Linear Combination
+<img src="https://render.githubusercontent.com/render/math?math= stationary(t) = a*timeSeries1(t) + b*timeSeries2(t) + c*timeSeries3(t) +... n**timeSeriesn(t)">
+Note that this is for all t such that t is in the bounds of the window in the time series we are analyzing.
 
+## Determining the Hedge Ratio - Linear Combination
+First and formost, lets discuss something that you might hear refered to as the hedge ratio. Essentally these are the values a,b,c...n in above equation that make sure time series 1 through n add together to a staionary time series. Although, we would it would be nice if a,b,c... n where all constant factors, the real world usually is not that nice. Hence it might produce better results if we treated the scalling factors as functions as well. Turning a,b,c...n into a(t),b(t),c(t)...n(t).
+
+Most derivations of the hedge ratio treat the scaling factors as constant. The kalman filter is one of the few advanced techniques that solves for the scaling factors as variable values.
 
 ## Cointegrated Augmented Dicky Fuller Test
+The CADF test (Cointegrated Augmented Dicky Fuller Test) does not tell us the hedging ratio. Moreover, it can only tell us if a pair (only takes two inputs) of time series cointegrate. It is a simple to implement test, but not very effective, as it is only useful for testing pair trading strategies. (Strategies that use only two time series to create a stationary time series)
 
+```
+from statsmodels.tsa.stattools import coint as cadf_test
+
+cadf_test(input_data["GLD"], input_data["USO"] )
+```
+
+```
+Output
+----------------------
+
+(-2.272435700404821,
+ 0.3873847286679448,
+ array([-3.89933891, -3.33774648, -3.0455719 ]))
+ 
+```
 
 
 ## Johansen Test
-
-
 
 
 
@@ -213,7 +232,6 @@ The important thing to consider here is the value N, this is the number of data 
 1) Using the Kalman Filter
 2) Using the Half life of mean reversion
 3) Optimiziting the paramater on data (Dangerous)
-
 
 
 ## Standard Deviation - Linear Scaling
