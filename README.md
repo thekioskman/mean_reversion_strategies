@@ -84,7 +84,7 @@ As a rule of thumb,  anything < 5% means we can be pretty certain. Another thing
 <br>
 If trace stat at 1% <  trace stat at 5% < trace stat at 10% -> the smaller the value, the more likely that the null hypothesis is wrong
 <br>
-**BUT**
+__BUT__
 <br>
 if If trace stat at 1%  > trace stat at 5% > trace stat at 10% -> the bigger the value, the more likely that the null hypothesis is wrong
 
