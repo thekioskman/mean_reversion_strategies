@@ -88,7 +88,6 @@ By this logic, we can say that plot 2 is "more stationary" than plot 1, but neit
 ### Now consider a stationary plot
 ![A stationary plot](/images/stationary%20plot%20example.png)
 
-Code Examples for image 1
 ```
 from statsmodels.tsa.stattools import adfuller
 
@@ -107,12 +106,56 @@ Output
  -654.0838685347887)
 ```
 
-
+Note that again the smaller the value of the trace statistic, the more likely our time series is stationary. Since our trace stat of -5.34 < -3.44 it follow that there is a < 1% chance our time series is not stationary. In other words... it is stationary (lol).
 
 ## Hurst Exponent Variance Ratio
+The Hurst Exponent is another critera we can use to evaluate stationarity. The test that uses the properties of the Hurst exponent is known as the variance ratio test. The hurst exponent is a pretty complicated here is an article that covers it pretty well https://towardsdatascience.com/introduction-to-the-hurst-exponent-with-code-in-python-4da0414ca52e, and is also where I got the code for calculating the hurst exponent from. The variance ratio test is just a hypothesis test to see how likely your calculated value of the hurst exponent is to be true.
 
 ```
-Code Example
+def get_hurst_exponent(time_series, max_lag):
+    """Returns the Hurst Exponent of the time series"""
+    
+    lags = range(2, max_lag)
+
+
+    # variances of the lagged differences
+    tau = [np.std(np.subtract(time_series.values[lag:], time_series.values[:-lag])) for lag in lags]
+
+    # calculate the slope of the log plot -> the Hurst Exponent
+    reg = np.polyfit(np.log(lags), np.log(tau), 1)
+
+    return reg[0]
+
+hurst = get_hurst_exponent(test_replicate["Plot2"])
+```
+
+The important thing to note here is the value of the lags, it indicates how far back we want to look into our data. In practice it is often the case that securities prices are not always mean reverting or always trending. Their movment tends to change over the course of time, they may have periods of mean reversion or periods of trending. Therfore, the time window (including both the starting point and the lag value) in which we apply the calcuation of the hurst exponent can yeild very different results. In the above code, we start from the latest value and just look back max_lag units of time. 
+
+When evaluting the result of the hurst exponent we note that it is a value between 0 and 1:
+hurst < 0.5 implies the time series is mean reverting
+hurst = 0.5 implies the time series is a random walk
+hurst > 0.5 implies the time series is trending
+
+
+For information on the variance ratio test (as well as an overview of many of the topics covered in the first half of this README) https://medium.com/bluekiri/simple-stationarity-tests-on-time-series-ad227e2e6d48. Also the site I ripped this code from.
+
+```
+import numpy as np
+
+def variance_ratio(ts, lag = 2):
+    """
+    Returns the variance ratio test result
+    """
+    # make sure we are working with an array, convert if necessary
+    ts = np.asarray(ts)
+    
+    # Apply the formula to calculate the test
+    n = len(ts)
+    mu  = sum(ts[1:n]-ts[:n-1])/n;
+    m=(n-lag+1)*(1-lag/n);
+    b=sum(np.square(ts[1:n]-ts[:n-1]-mu))/(n-1)
+    t=sum(np.square(ts[lag:n]-ts[:n-lag]-lag*mu))/m
+    return t/(lag*b);
 ```
 
 ## Cointegartion and Pair Trading with Mean Reversion
@@ -120,23 +163,23 @@ Code Example
 ```
 Code Example
 ```
-### Cointegrated Augmented Dicky Fuller Test
+## Cointegrated Augmented Dicky Fuller Test
 ```
 Code Example
 ```
 
 
-### Johansen Test
+## Johansen Test
 
 ## Determining the Hedge Ratio
 
-### Linear Regression
+## Linear Regression
 
-### Linear Regression with Moving Window
+## Linear Regression with Moving Window
 
-### Johansen Test (Advanced)
+## Johansen Test (Advanced)
 
-### Kalman Filter (Advanced)
+## Kalman Filter (Advanced)
 Gives us:
 1) Moving Average - Mean value
 2) Moving Slope - Hedge ratio
@@ -147,10 +190,10 @@ Gives us:
 ## Generating Entry and Exit Signals
 This is the part where we turn the math into an actual trading strategy. We need to translate our mathematic factors into indicators for the algorithm of how many shares of which stocks to buy or short. We will look at two very simple mathemicatical principles that can be useful in this process.
 
-### Half Life of Mean Reversion
+## Half Life of Mean Reversion
 
 
-### Standard Deviation
+## Standard Deviation
 All of our entry and exit signals will be based on the standard deviation of the current price to the mean. This makes logical sense if we consider the fact that we have essentially just combined a bunch of time series in a partical way to generate a stationary time series. Since our time series is stationary, we "know it will revert back to its mean value". Therefore, when the standard deviation of the current price (for our generated time series) from the mean is >> 0 we should short our conbination of securities because the price of our combination is likely to go down toward the mean. When the standard deviation is << 0 we should be long on our combination because the prcie (value) or our combination of securities is likely to go back up toward the mean. 
 
 Recall that standard deviation is:
@@ -163,9 +206,9 @@ The important thing to consider here is the value N, this is the number of data 
 
 
 
-### Standard Deviation - Linear Scaling
+## Standard Deviation - Linear Scaling
 
-### Standard Deviation - Bollinger Bands
+## Standard Deviation - Bollinger Bands
 
 
 # Where do you come in?
