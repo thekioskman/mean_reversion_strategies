@@ -108,8 +108,11 @@ Output
 
 Note that again the smaller the value of the trace statistic, the more likely our time series is stationary. Since our trace stat of -5.34 < -3.44 it follow that there is a < 1% chance our time series is not stationary. In other words... it is stationary (lol).
 
-## Hurst Exponent Variance Ratio
-The Hurst Exponent is another critera we can use to evaluate stationarity. The test that uses the properties of the Hurst exponent is known as the variance ratio test. The hurst exponent is a pretty complicated here is an article that covers it pretty well https://towardsdatascience.com/introduction-to-the-hurst-exponent-with-code-in-python-4da0414ca52e, and is also where I got the code for calculating the hurst exponent from. The variance ratio test is just a hypothesis test to see how likely your calculated value of the hurst exponent is to be true.
+## Hurst Exponent & Variance Ratio Test
+The Hurst Exponent is another critera we can use to evaluate stationarity. The variance ratio test is just a hypothesis test to see how likely your calculated value of the hurst exponent is to be true since you are running the calculation on a finite dataset. (And more than likely just a subset of that finite dataset)
+
+<br>
+The hurst exponent is a pretty complicated here is an article that covers it pretty well -  https://towardsdatascience.com/introduction-to-the-hurst-exponent-with-code-in-python-4da0414ca52e, and is also where I got the code for calculating the hurst exponent from. 
 
 ```
 def get_hurst_exponent(time_series, max_lag):
@@ -158,11 +161,14 @@ def variance_ratio(ts, lag = 2):
     return t/(lag*b);
 ```
 
-## Cointegartion and Pair Trading with Mean Reversion
+In breif, we essentially just want to see a result >= 1 on the variance ratio test. Which implies that our time series is not a random walk with >= 90% confidence. Though the details are much more technical than I let on.
 
-```
-Code Example
-```
+## Cointegration and Pair Trading with Mean Reversion
+Cointegration, for out purposes is just the process of finding a linear combination of time series that will (linearly combine to) form a stationary (mean reverting) time series. It is rare(impossible) to find any stock or dervative's price that will be stationary for any meaningful amount of time. Therefore, we need to be able to snythesis a stationary time series using a combination of stocks, or other securities.
+
+
+The following tests will tell you if two or more time series do cointegrate (linearly combine to form a stationary time series) and 
+
 ## Cointegrated Augmented Dicky Fuller Test
 ```
 Code Example
