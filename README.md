@@ -226,7 +226,16 @@ And therefore
 
 Now the idea here is that since our price values for EWA and EWC oscilate around the regression line EWA = slope*EWC, the value of the series EWA - slope*EWC should oscilate around 0. Essentially generating a mean revering time series. 
 
+<br>
+<br>
+But you might have noticed something important. Our regression line really is not that good. You can see period where many datapoints are concentrated above the line, and other regions where they are clusterd below the line. This issue wil be reflected in our resulting "stationary" time series.
+
 ## Linear Regression with Moving Window
+So the notion of a OLS Regression generating a constant hedge ratio was just a precursor to disucssing the Rolling window Linear Regression(which will actually yeild some decent results). The idea here is to treat the slope as a variable rather than a constant. Recall how I stated there are period where many values are above(or below) the line of best fit, and since the this regression line is fitted on ALL of the data it cannot account for regime shifts in the market and can quickly become outdated. Therefore, it makes logical sense to update out linear regression every so often. Then is pretty much was a rolling window OLS is. We are running a regression on a section of the data each time.
+
+![Rolling Regression & Linear Regression Comparison](./images/Linear%20Regession%20Hedge%20Ratio%20Example.png)
+
+
 
 
 
