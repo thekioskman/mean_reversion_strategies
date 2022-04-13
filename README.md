@@ -84,7 +84,7 @@ As a rule of thumb,  anything < 5% means we can be pretty certain. Another thing
 <br>
 If trace stat at 1% <  trace stat at 5% < trace stat at 10% -> the smaller the value, the more likely that the null hypothesis is wrong
 <br>
-_BUT_
+*BUT*
 <br>
 if If trace stat at 1%  > trace stat at 5% > trace stat at 10% -> the bigger the value, the more likely that the null hypothesis is wrong
 
@@ -213,10 +213,23 @@ In practice, we always prefer the Johansen Test over the CADF test. The Johansen
 
 
 ## Linear Regression
-Another method we can use to get the hedge ratio between *two* stocks 
+Another method we can use to get the hedge ratio between *two* stocks is to use a linear regression. The concept here is pretty simple, consider the following time series for the EWC and EWA ETF's. A quick CADF test tells us that they do conintegrate. We can verify this by ploting their time series values on a scatter plot, with EWC(t) on the x-axis, and EWA(t) on the y-axis.
 
+![Linear Regression Demo](./images/Linear%20Regression%20DEMO.png)
+
+In theory, the actual price point values of our time series should be close to, and hover around the value of the least squares regression we ran. (Since our time series value conintegrate). This means that we expect the price to mean revert around this regression line. Thefore, to generate a stationary series we use the following equation.
+
+<img src="https://render.githubusercontent.com/render/math?math=EWA(t) = slope*EWC(t)">
+
+And therefore
+<img src="https://render.githubusercontent.com/render/math?math=stationary(t) = EWA(t) - slope*EWC(t)">
+
+Now the idea here is that since our price values for EWA and EWC oscilate around the regression line EWA = slope*EWC, the value of the series EWA - slope*EWC should oscilate around 0. Essentially generating a mean revering time series. 
 
 ## Linear Regression with Moving Window
+
+
+
 
 ## Johansen Test (Advanced)
 
