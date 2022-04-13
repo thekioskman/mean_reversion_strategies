@@ -115,10 +115,12 @@ The Hurst Exponent is another critera we can use to evaluate stationarity. The v
 The hurst exponent is a pretty complicated here is an article that covers it pretty well -  https://towardsdatascience.com/introduction-to-the-hurst-exponent-with-code-in-python-4da0414ca52e, and is also where I got the code for calculating the hurst exponent from. 
 
 <br>
+
 ```
 def get_hurst_exponent(time_series, max_lag):
-    """Returns the Hurst Exponent of the time series"""
-    
+    '''
+    Returns the Hurst Exponent of the time series
+    '''
     lags = range(2, max_lag)
 
 
@@ -130,6 +132,7 @@ def get_hurst_exponent(time_series, max_lag):
 
     return reg[0]
 ```
+
 
 The important thing to note here is the value of the lags, it indicates how far back we want to look into our data. In practice it is often the case that securities prices are not always mean reverting or always trending. Their movment tends to change over the course of time, they may have periods of mean reversion or periods of trending. Therfore, the time window (including both the starting point and the lag value) in which we apply the calcuation of the hurst exponent can yeild very different results. In the above code, we start from the latest value and just look back max_lag units of time. 
 
