@@ -114,6 +114,7 @@ The Hurst Exponent is another critera we can use to evaluate stationarity. The v
 <br>
 The hurst exponent is a pretty complicated here is an article that covers it pretty well -  https://towardsdatascience.com/introduction-to-the-hurst-exponent-with-code-in-python-4da0414ca52e, and is also where I got the code for calculating the hurst exponent from. 
 
+
 ```
 def get_hurst_exponent(time_series, max_lag):
     """Returns the Hurst Exponent of the time series"""
