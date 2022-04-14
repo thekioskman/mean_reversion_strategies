@@ -263,6 +263,7 @@ slope_function_20
 ### A note of using Simple Moving Averages
 
 ## Johansen Test (Advanced)
+Now let us consider the Johansen test, which will be usefull when we want to the test the cointegration & get the hedge ratio of MULTIPLE(more than two) time series. We will not go into the mathematics of how it works as it is significantly more complicated than a linear regression.
 
 ```
 #first we need to test whether the two stocks cointegrate using the Johansen test
@@ -292,12 +293,60 @@ print(trstat)
 print(tsignf)
 ```
 
+```
+Output
+Eigen vectors: [[ 0.03903416 -0.00707638]
+ [ 0.00444021  0.00514214]]
+[0 1]
+[7.43610603 0.95822082]
+[[13.4294 15.4943 19.9349]
+ [ 2.7055  3.8415  6.6349]]
+```
+
+
 ## Kalman Filter (Advanced)
+
+Again we will not go into the specfics about how the Kalman filter works. We will just learn how to analyze the results we are getting from it. The Kalman filter can be a whole conversation in and of itself. All we need to know is how to extract the following components from the filter. There are many different packages that provide a Kalman filter. I am using the pykalman package, although it is a little bit outdated. A good exercise would be to figure out how the Kalman filter works, and trying to implement one yourself.
+
 Gives us:
 1) Moving Average - Mean value
 2) Moving Slope - Hedge ratio
 3) Moving Standard Deviation - Entry and Exit signals
 
+```
+#Dynamic Linear Regression using a Kalman Filter
+from pykalman import KalmanFilter
+
+"""
+Utilise the Kalman Filter from the pyKalman package
+to calculate the slope and intercept of the regressed
+ETF prices.
+"""
+delta = 1e-5
+trans_cov = delta / (1 - delta) * np.eye(2)
+obs_mat = np.vstack([ewc["Open"], np.ones(ewc["Open"].shape)]).T[:, np.newaxis]
+
+kf = KalmanFilter(
+    n_dim_obs=1, 
+    n_dim_state=2,
+    initial_state_mean=np.zeros(2),
+    initial_state_covariance=np.ones((2, 2)),
+    transition_matrices=np.eye(2),
+    observation_matrices=obs_mat,
+    observation_covariance=1.0,
+    transition_covariance=trans_cov
+)
+
+state_means, state_covs = kf.filter(ewa["Open"].values)
+
+slope = state_means[:,0]
+intercept = state_means[:,1]
+```
+
+### Lets compare the slope values we get from the Kalman filter to the slope values of the rolling regression
+One important thing to note first is that the Kalman filter also gives us an intercept function. Which is the value that the time series is supposed to mean revert around. The rolling agression just assumes this value to be 0 (and constant).
+
+![Kalman vs Rolling Regression](/images/Linear%20Regression%20vs%20Kalman%20Filter.png)
 
 
 ## Generating Entry and Exit Signals
