@@ -264,7 +264,33 @@ slope_function_20
 
 ## Johansen Test (Advanced)
 
+```
+#first we need to test whether the two stocks cointegrate using the Johansen test
+#This is how the johasen test works in statsmodels
+#johansen_test(input_data, deterministic order, number_lags) 
+#input_data = [df_time series 1, df_time series 2]
+gold_prices = pd.read_csv("Stock_data/GLD_daily.csv")
+oil_prices = pd.read_csv("Stock_data/USO_daily.csv")
+gold_prices["Date"] = pd.to_datetime(gold_prices['Date'])
+oil_prices["Date"] = pd.to_datetime(oil_prices['Date'])
 
+input_data = pd.DataFrame()
+input_data["GLD"] = gold_prices[gold_prices["Date"] > datetime.datetime(2007,1,1)]["Close"].reset_index(drop=True) 
+input_data["USO"] = oil_prices[oil_prices["Date"] > datetime.datetime(2007,1,1)]["Close"].reset_index(drop=True) 
+
+
+jres = johansen_test(input_data, 0 , 1)
+
+trstat = jres.lr1                       # trace statistic
+tsignf = jres.cvt                       # critical values
+eigen_vec = jres.evec
+eigen_ord = jres.ind                   
+
+print("Eigen vectors:", eigen_vec)
+print(eigen_ord)
+print(trstat)
+print(tsignf)
+```
 
 ## Kalman Filter (Advanced)
 Gives us:
