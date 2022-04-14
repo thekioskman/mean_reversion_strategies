@@ -29,31 +29,31 @@
 Here I test out some of the mean reversion strategies found in algorithmic trading textbooks to see how well they work in practice now (how well I can actually execute them... lol). The Strategies here were read about in Algorithmic Trading by Ernest P. Chan - a great book but hard to follow at times. The initial roughwork and visualization of the strategy will be in jupyter notebook, then we will do a proper backtest in Backtrader (Python backtesting library)
 
 # Background Information
-To understand the demo strategies i will present, lets go over some of the core mathematical princeples that the algorithmis will use. We will use the examples from the strategies themselves to illustrate the concepts and by the end you will be able to peice together a mean reverting strategy from scatch.
+To understand the demo strategies i will present, lets go over some of the core mathematical principles that the algorithm's will use. We will use the examples from the strategies themselves to illustrate the concepts and by the end you will be able to piece together a mean reverting strategy from scratch.
 
 ## Stationarity and Mean Reversion
-The core concept governing mean reversion strategies is the notion of stationarity. If you look into stationarity from a mathemicatcal perspective you may come across many complex defitions that are hard to visualize. In the simplest terms, we want a time series to be stationary in the sense that we know that the value of the time series will oscillate around the mean value in a "predicatable way". 
+The core concept governing mean reversion strategies is the notion of stationarity. If you look into stationarity from a mathemicatcal perspective you may come across many complex definitions that are hard to visualize. In the simplest terms, we want a time series to be stationary in the sense that we know that the value of the time series will oscillate around the mean value in a "predictable way". 
 
-We wont every find time series that are perfectly stationaries in the world of securites trading, but our preference is for our time series to have a constant(enough) variance about the mean value.
+We wont every find time series that are perfectly stationary in the world of securities trading, but our preference is for our time series to have a constant(enough) variance about the mean value.
 
 ![types of stationarity image](/images/medium%20article%20image.png)
 For an in-depth look at stationarity concepts (also courtesy of image) - https://towardsdatascience.com/stationarity-in-time-series-analysis-90c94f27322
 
-Notice that even if the mean value of our time series is variable, that doesnt really matter to us (since we can calculate the mean with a moving average). What is important is that the time series "always go back to the mean" in other words has a semi-constant variance. In the following, we will present a variety of ways to dertermine whether a time series is stationary or not. We will not go into exactly how these tests work, but rather how to anaylze their results. For these statistical tests we will be using the statsmodels library.
+Notice that even if the mean value of our time series is variable, that doesn't really matter to us (since we can calculate the mean with a moving average). What is important is that the time series "always go back to the mean" in other words has a semi-constant variance. In the following, we will present a variety of ways to determine whether a time series is stationary or not. We will not go into exactly how these tests work, but rather how to analyze their results. For these statistical tests we will be using the statsmodels library.
 
 ### What is a Hypothesis Test?
-A lot of the following tests for both stationarity and cointegration are known as hypothesis tests. Essentially a statistical way for us to asses the probability of a certain assumption, in this case whether something is stationary or not. To be able to interpret the follwing tests you need to understand how a hypothesis test works.
+A lot of the following tests for both stationarity and cointegration are known as hypothesis tests. Essentially a statistical way for us to asses the probability of a certain assumption, in this case whether something is stationary or not. To be able to interpret the following tests you need to understand how a hypothesis test works.
 
-1) Null Hypothsis - This is our initial assumption. What we first assume to be true: the time series is stationary
-2) Challenger Hypothesis - This is the challange to our null hypothesis in this case it is the just the negation : the time series is not stationary
+1) Null Hypothesis - This is our initial assumption. What we first assume to be true: the time series is stationary
+2) Challenger Hypothesis - This is the challenge to our null hypothesis in this case it is the just the negation : the time series is not stationary
 3) Test Statistic - A observation we can draw of the data *also called the trace statistic*
 4) P-value - The probability of observing the test statistic
 
-Usually you will know the probability distribution and be able to calcualte the the p-value for a given observation. But since we are using a module with abtracts away the manual calculation, we have to do a little interpolation to figure out what our test statistic is trying to tell us.
+Usually you will know the probability distribution and be able to calculate the the p-value for a given observation. But since we are using a module with abstracts away the manual calculation, we have to do a little interpolation to figure out what our test statistic is trying to tell us.
 
 
 ## Augmented Dicky Fuller Test
-For this example, consider the following graphs, and thier results for the Augmented Dicky Fully test
+For this example, consider the following graphs, and their results for the Augmented Dicky Fully test
 ![two non stationary plots](/images/staionary%20example.png)
 Code Examples for image 1
 ```
@@ -90,7 +90,7 @@ Plot 2:
 
 Ok lets break down the values returned by the function adfuller(). The first value in the tuple is the trace statistic. 
 <br>
-1) In the case of plot 1 it is aprox -0.43996. 
+1) In the case of plot 1 it is approx -0.43996. 
 
 2) The second value in the tuple is the p-value. 
 3) The third value is the number of lags used for the calculation - the lookback window
@@ -101,11 +101,11 @@ For our purposes, we can ignore the 2nd , 3rd and 4th values. We care about the 
 
 <br>
 <br>
-Therfore, what the output for plot 1 is telling us is that there is a 1% change of our trace statistic being -3.44 if the plot is not stationary. This essentially means that is our trace statistic is close to -3.44 we can be pretty certain that our time series is stationary. Ofcourse is follows that there is a 5% change of test statistic = -2.86 and our time series not being stationary.
+Therefore, what the output for plot 1 is telling us is that there is a 1% change of our trace statistic being -3.44 if the plot is not stationary. This essentially means that is our trace statistic is close to -3.44 we can be pretty certain that our time series is stationary. Of course is follows that there is a 5% change of test statistic = -2.86 and our time series not being stationary.
 
 <br>
 <br>
-As a rule of thumb,  anything < 5% means we can be pretty certain. Another thing you might have already noticed is that the trace statistics get smaller as our confidence of stationarity increase. Thus, *in this case*, we can interpret a smaller trace statistic as better evidence for us if we want the time series to be stationary. It natrually follows that if our test statistic = -100 then there is a <<<<< 1% chance that our time series is not stationary.
+As a rule of thumb,  anything < 5% means we can be pretty certain. Another thing you might have already noticed is that the trace statistics get smaller as our confidence of stationarity increase. Thus, *in this case*, we can interpret a smaller trace statistic as better evidence for us if we want the time series to be stationary. It naturally follows that if our test statistic = -100 then there is a <<<<< 1% chance that our time series is not stationary.
 
 <br>
 <br>
@@ -117,7 +117,7 @@ if If trace stat at 1%  > trace stat at 5% > trace stat at 10% -> the bigger the
 
 <br>
 <br>
-By this logic, we can say that plot 2 is "more stationary" than plot 1, but neither are truly stationary by defintion. (Don't say this is real life, math people will murder you.)
+By this logic, we can say that plot 2 is "more stationary" than plot 1, but neither are truly stationary by definition. (Don't say this is real life, math people will murder you.)
 
 
 ### Now consider a stationary plot
@@ -144,7 +144,7 @@ Output
 Note that again the smaller the value of the trace statistic, the more likely our time series is stationary. Since our trace stat of -5.34 < -3.44 it follow that there is a < 1% chance our time series is not stationary. In other words... it is stationary (lol). Another things to notice is that the second value 4.5e-06 is our p-value, which we can look at as the probability that we observed our test statistic given the null hypothesis is true. Therefore, we can roughly say there is a 0.00045% change that it is not stationary.
 
 ## Hurst Exponent & Variance Ratio Test
-The Hurst Exponent is another critera we can use to evaluate stationarity. The variance ratio test is just a hypothesis test to see how likely your calculated value of the hurst exponent is to be true since you are running the calculation on a finite dataset. (And more than likely just a subset of that finite dataset)
+The Hurst Exponent is another criteria we can use to evaluate stationarity. The variance ratio test is just a hypothesis test to see how likely your calculated value of the hurst exponent is to be true since you are running the calculation on a finite dataset. (And more than likely just a subset of that finite dataset)
 
 <br>
 The hurst exponent is a pretty complicated here is an article that covers it pretty well -  https://towardsdatascience.com/introduction-to-the-hurst-exponent-with-code-in-python-4da0414ca52e, and is also where I got the code for calculating the hurst exponent from. 
@@ -169,9 +169,9 @@ def get_hurst_exponent(time_series, max_lag):
 ```
 
 
-The important thing to note here is the value of the lags, it indicates how far back we want to look into our data. In practice it is often the case that securities prices are not always mean reverting or always trending. Their movment tends to change over the course of time, they may have periods of mean reversion or periods of trending. Therfore, the time window (including both the starting point and the lag value) in which we apply the calcuation of the hurst exponent can yeild very different results. In the above code, we start from the latest value and just look back max_lag units of time. 
+The important thing to note here is the value of the lags, it indicates how far back we want to look into our data. In practice it is often the case that securities prices are not always mean reverting or always trending. Their movement tends to change over the course of time, they may have periods of mean reversion or periods of trending. Therefore, the time window (including both the starting point and the lag value) in which we apply the calculation of the hurst exponent can yield very different results. In the above code, we start from the latest value and just look back max_lag units of time. 
 
-When evaluting the result of the hurst exponent we note that it is a value between 0 and 1:
+When evaluating the result of the hurst exponent we note that it is a value between 0 and 1:
 hurst < 0.5 implies the time series is mean reverting
 hurst = 0.5 implies the time series is a random walk
 hurst > 0.5 implies the time series is trending
@@ -198,19 +198,19 @@ def variance_ratio(ts, lag = 2):
     return t/(lag*b);
 ```
 
-In breif, we essentially just want to see a result >= 1 on the variance ratio test. Which implies that our time series is not a random walk with >= 90% confidence. Though the details are much more technical than I let on.
+In brief, we essentially just want to see a result >= 1 on the variance ratio test. Which implies that our time series is not a random walk with >= 90% confidence. Though the details are much more technical than I let on.
 
 ## Cointegration and Pair Trading with Mean Reversion
-Cointegration, for out purposes is just the process of finding a linear combination of time series that will (linearly combine to) form a stationary (mean reverting) time series. It is rare(impossible) to find any stock or dervative's price that will be stationary for any meaningful amount of time. Therefore, we need to be able to snythesis a stationary time series using a combination of stocks, or other securities. The following tests will tell you if two or more time series do cointegrate (linearly combine to form a stationary time series) and give your thier hedge ratio
+Cointegration, for out purposes is just the process of finding a linear combination of time series that will (linearly combine to) form a stationary (mean reverting) time series. It is rare(impossible) to find any stock or derivative's price that will be stationary for any meaningful amount of time. Therefore, we need to be able to snythesis a stationary time series using a combination of stocks, or other securities. The following tests will tell you if two or more time series do cointegrate (linearly combine to form a stationary time series) and give your their hedge ratio
 
 
 <img src="https://render.githubusercontent.com/render/math?math=stationary(t) = a*timeSeries1(t) %2B b*timeSeries2(t) %2B c*timeSeries3(t) %2B... n**timeSeriesn(t)">
 Note that this is for all t such that t is in the bounds of the window in the time series we are analyzing.
 
 ## Determining the Hedge Ratio - Linear Combination
-First and formost, lets discuss something that you might hear refered to as the hedge ratio. Essentally these are the values a,b,c...n in above equation that make sure time series 1 through n add together to a staionary time series. Although, we would it would be nice if a,b,c... n where all constant factors, the real world usually is not that nice. Hence it might produce better results if we treated the scalling factors as functions as well. Turning a,b,c...n into a(t),b(t),c(t)...n(t).
+First and foremost, lets discuss something that you might hear referred to as the hedge ratio. Essentially these are the values a,b,c...n in above equation that make sure time series 1 through n add together to a stationary time series. Although, we would it would be nice if a,b,c... n where all constant factors, the real world usually is not that nice. Hence it might produce better results if we treated the scaling factors as functions as well. Turning a,b,c...n into a(t),b(t),c(t)...n(t).
 
-Most derivations of the hedge ratio treat the scaling factors as constant. The kalman filter is one of the few advanced techniques that solves for the scaling factors as variable values.
+Most derivations of the hedge ratio treat the scaling factors as constant. The Kalman filter is one of the few advanced techniques that solves for the scaling factors as variable values.
 
 ## Cointegrated Augmented Dicky Fuller Test
 The CADF test (Cointegrated Augmented Dicky Fuller Test) does not tell us the hedging ratio. Moreover, it can only tell us if a pair (only takes two inputs) of time series cointegrate. It is a simple to implement test, but not very effective, as it is only useful for testing pair trading strategies. (Strategies that use only two time series to create a stationary time series)
@@ -240,11 +240,11 @@ In practice, we always prefer the Johansen Test over the CADF test. The Johansen
 
 
 ## Linear Regression
-Another method we can use to get the hedge ratio between *two* stocks is to use a linear regression. The concept here is pretty simple, consider the following time series for the EWC and EWA ETF's. A quick CADF test tells us that they do conintegrate. We can verify this by ploting their time series values on a scatter plot, with EWC(t) on the x-axis, and EWA(t) on the y-axis.
+Another method we can use to get the hedge ratio between *two* stocks is to use a linear regression. The concept here is pretty simple, consider the following time series for the EWC and EWA ETF's. A quick CADF test tells us that they do conintegrate. We can verify this by plotting their time series values on a scatter plot, with EWC(t) on the x-axis, and EWA(t) on the y-axis.
 
 ![Linear Regression Demo](./images/Linear%20Regression%20DEMO.png)
 
-In theory, the actual price point values of our time series should be close to, and hover around the value of the least squares regression we ran. (Since our time series value conintegrate). This means that we expect the price to mean revert around this regression line. Thefore, to generate a stationary series we use the following equation.
+In theory, the actual price point values of our time series should be close to, and hover around the value of the least squares regression we ran. (Since our time series value conintegrate). This means that we expect the price to mean revert around this regression line. Therefore, to generate a stationary series we use the following equation.
 
 
 
@@ -253,7 +253,7 @@ In theory, the actual price point values of our time series should be close to, 
 And therefore
 <img src="https://render.githubusercontent.com/render/math?math=stationary(t) = EWA(t) - slope*EWC(t)">
 
-Now the idea here is that since our price values for EWA and EWC oscilate around the regression line EWA = slope*EWC, the value of the series EWA - slope*EWC should oscilate around 0. Essentially generating a mean revering time series. 
+Now the idea here is that since our price values for EWA and EWC oscillate around the regression line EWA = slope*EWC, the value of the series EWA - slope*EWC should oscilate around 0. Essentially generating a mean revering time series. 
 
 ```
 from statsmodels.regression.linear_model import OLS as least_sqaures_regression
@@ -266,11 +266,11 @@ Calling results.params[0] gives us the slope value. However, you should consult 
 
 <br>
 <br>
-But you might have noticed something important. Our regression line really is not that good. You can see period where many datapoints are concentrated above the line, and other regions where they are clusterd below the line. This issue wil be reflected in our resulting "stationary" time series.
+But you might have noticed something important. Our regression line really is not that good. You can see period where many data points are concentrated above the line, and other regions where they are clustered below the line. This issue wil be reflected in our resulting "stationary" time series.
 
 ## Linear Regression with Moving Window
-So the notion of a OLS Regression generating a constant hedge ratio was just a precursor to disucssing the Rolling window Linear Regression(which will actually yeild some decent results). The idea here is to treat the slope as a variable rather than a constant. Recall how I stated there are period where many values are above(or below) the line of best fit, and since the this regression line is fitted on ALL of the data it cannot account for regime shifts in the market and can quickly become outdated. Therefore, it makes logical sense to update out linear regression every so often. Then is pretty much was a rolling window OLS is. We are running a regression on a section of the data each time.
-
+So the notion of a OLS Regression generating a constant hedge ratio was just a precursor to discussing the Rolling window Linear Regression(which will actually yield some decent results). The idea here is to treat the slope as a variable rather than a constant. Recall how I stated there are period where many values are above(or below) the line of best fit, and since the this regression line is fitted on ALL of the data it cannot account for regime shifts in the market and can quickly become outdated. Therefore, it makes logical sense to update out linear regression every so often. Then is pretty much was a rolling window OLS is. We are running a regression on a section of the data each time.
+<!--  -->
 ![Rolling Regression & Linear Regression Comparison](./images/Linear%20Regession%20Hedge%20Ratio%20Example.png)
 
 
@@ -279,8 +279,8 @@ As you can see the results of the rolling regression are much better than that o
 ```
 from statsmodels.regression.rolling import RollingOLS
 
-rolling_regerssion = RollingOLS(ewc["Open"], ewa["Open"], window=20)
-rolling_results = rolling_regerssion.fit()
+rolling_regression = RollingOLS(ewc["Open"], ewa["Open"], window=20)
+rolling_results = rolling_regression.fit()
 slope_function_20 = rolling_results.params
 slope_function_20 = slope_function_20.rename(columns={"Open" : "Slope"})
 slope_function_20
@@ -290,7 +290,7 @@ slope_function_20
 ### A note of using Simple Moving Averages
 
 ## Johansen Test (Advanced)
-Now let us consider the Johansen test, which will be usefull when we want to the test the cointegration & get the hedge ratio of MULTIPLE(more than two) time series. We will not go into the mathematics of how it works as it is significantly more complicated than a linear regression.
+Now let us consider the Johansen test, which will be useful when we want to the test the cointegration & get the hedge ratio of MULTIPLE(more than two) time series. We will not go into the mathematics of how it works as it is significantly more complicated than a linear regression.
 
 ```
 #first we need to test whether the two stocks cointegrate using the Johansen test
