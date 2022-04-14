@@ -343,7 +343,7 @@ slope = state_means[:,0]
 intercept = state_means[:,1]
 ```
 
-### Lets compare the slope values we get from the Kalman filter to the slope values of the rolling regression
+### Lets compare Slope/Intercept from Kalman filter to Rolling regression
 One important thing to note first is that the Kalman filter also gives us an intercept function. Which is the value that the time series is supposed to mean revert around. The rolling agression just assumes this value to be 0 (and constant).
 
 ![Kalman vs Rolling Regression](/images/Linear%20Regression%20vs%20Kalman%20Filter.png)
