@@ -1,3 +1,30 @@
+- [Mean Reversion Strategies](#mean-reversion-strategies)
+- [Background Information](#background-information)
+  - [Stationarity and Mean Reversion](#stationarity-and-mean-reversion)
+    - [What is a Hypothesis Test?](#what-is-a-hypothesis-test)
+  - [Augmented Dicky Fuller Test](#augmented-dicky-fuller-test)
+    - [Now consider a stationary plot](#now-consider-a-stationary-plot)
+  - [Hurst Exponent & Variance Ratio Test](#hurst-exponent--variance-ratio-test)
+  - [Cointegration and Pair Trading with Mean Reversion](#cointegration-and-pair-trading-with-mean-reversion)
+  - [Determining the Hedge Ratio - Linear Combination](#determining-the-hedge-ratio---linear-combination)
+  - [Cointegrated Augmented Dicky Fuller Test](#cointegrated-augmented-dicky-fuller-test)
+  - [Johansen Test](#johansen-test)
+  - [Linear Regression](#linear-regression)
+  - [Linear Regression with Moving Window](#linear-regression-with-moving-window)
+    - [A note of using Simple Moving Averages](#a-note-of-using-simple-moving-averages)
+  - [Johansen Test (Advanced)](#johansen-test-advanced)
+  - [Kalman Filter (Advanced)](#kalman-filter-advanced)
+    - [Lets compare Slope/Intercept from Kalman filter to Rolling regression](#lets-compare-slopeintercept-from-kalman-filter-to-rolling-regression)
+  - [Generating Entry and Exit Signals](#generating-entry-and-exit-signals)
+  - [Half Life of Mean Reversion](#half-life-of-mean-reversion)
+  - [Standard Deviation](#standard-deviation)
+  - [Standard Deviation - Linear Scaling](#standard-deviation---linear-scaling)
+  - [Standard Deviation - Bollinger Bands](#standard-deviation---bollinger-bands)
+- [Where do you come in?](#where-do-you-come-in)
+  - [Small Changes go a long way](#small-changes-go-a-long-way)
+  - [Its the context and situation that make a strategy unique](#its-the-context-and-situation-that-make-a-strategy-unique)
+  - [Your Style, Your Strat](#your-style-your-strat)
+
 # Mean Reversion Strategies
 Here I test out some of the mean reversion strategies found in algorithmic trading textbooks to see how well they work in practice now (how well I can actually execute them... lol). The Strategies here were read about in Algorithmic Trading by Ernest P. Chan - a great book but hard to follow at times. The initial roughwork and visualization of the strategy will be in jupyter notebook, then we will do a proper backtest in Backtrader (Python backtesting library)
 
@@ -343,8 +370,9 @@ slope = state_means[:,0]
 intercept = state_means[:,1]
 ```
 
-### Lets compare Slope/Intercept from Kalman filter to Rolling regression
 One important thing to note first is that the Kalman filter also gives us an intercept function. Which is the value that the time series is supposed to mean revert around. The rolling agression just assumes this value to be 0 (and constant).
+
+### Lets compare Slope/Intercept from Kalman filter to Rolling regression
 
 ![Kalman vs Rolling Regression](/images/Linear%20Regression%20vs%20Kalman%20Filter.png)
 
