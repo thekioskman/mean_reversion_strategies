@@ -238,7 +238,7 @@ if __name__ == '__main__':
     df = df[df["Date"] > datetime.datetime(2019,3,1)]
     df.set_index("Date", inplace = True)
     
-    data = ewa_ewc_pandas(dataname=df)
+    data = ewa_ewc_pandas(dataname=df, plot=False)
 
     ewa =  bt.feeds.GenericCSVData(
         fromdate=datetime.datetime(2019,3,1),
@@ -272,6 +272,7 @@ if __name__ == '__main__':
     print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
     cerebro.run()
+    #cerebro.plot(volume=False, stdstats=False)
 
     # Print out the final result
     print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
@@ -279,5 +280,5 @@ if __name__ == '__main__':
     #cerebro.plot(volume=False)
     print(((cerebro.broker.getvalue() - start_cash)/ start_cash ))
     
-    
+
 
