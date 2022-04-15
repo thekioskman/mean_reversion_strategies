@@ -22,7 +22,6 @@
 - [Testing with BackTrader](#testing-with-backtrader)
 - [Where do you come in?](#where-do-you-come-in)
   - [Small Changes go a long way](#small-changes-go-a-long-way)
-  - [Its the context and situation that make a strategy unique](#its-the-context-and-situation-that-make-a-strategy-unique)
   - [Your Style, Your Strat](#your-style-your-strat)
 
 # Mean Reversion Strategies
@@ -561,13 +560,11 @@ To test our strategies with a simulated broker, I used backtrader you can find t
 At this point it seems that the core principles behind mean reverting strategies all mostly the same. You might be thinking to yourself: So where does the induviduality come from, if any nerd can build a mean reverting strat, what seperates the winners from the losers? (OK first of all, bad mentality. We are all here to have fun :) ). I will take a few pages out of EP Chan's first book: Quantitative Trading, and give some insight into what to do from here on.
 
 ## Small Changes go a long way
-
-
-## Its the context and situation that make a strategy unique
+Performance of a strategy is very sensitive to details, small changes in these details can bring about substantial improvements. These changes can be as simple as changing the look-back time period for determining the moving average, or entering orders at the open rather than at the close. Backtesting a strategy allows us to experiment with every detail. Just because the core concepts are the same, does not mean the strategy is not unique
 
 
 ## Your Style, Your Strat
-
+Different people have different investment styles. How you use your strategy will be unique to your situation. What you expect from it, what you put into it and in what markets do you think it is viable are judgment calls that you make. Having a solid trading model is not enough, you need to be good enough to apply it to its full potential.
 
 
 
