@@ -474,12 +474,39 @@ The eigen vectors are not given as transposed lists. So 2.68 and -2.34 are the v
 ![Johasen Test Demo](images/Johansen%20Eigen%20value%20demo.png)
 
 
-
-
 ## Generating Entry and Exit Signals
 This is the part where we turn the math into an actual trading strategy. We need to translate our mathematic factors into indicators for the algorithm of how many shares of which stocks to buy or short. We will look at two very simple mathemicatical principles that can be useful in this process.
 
 ## Half Life of Mean Reversion
+The half life of mean reversion is an important concept when evaluating the speed at which a strategy can provide returns. The it is pretty self explanatory, it simply gives us an insight into how long a strategy takes to mean revert (and thus provide profit). Naturally for example, if the half life of mean reversion is 20 days, we can expect it to revert every 40 days.
+
+```
+from statsmodels.tools.tools import add_constant
+#Half life of mean reversion calculation is a regression between
+#y(t) - y(t-1) as the dependent variable
+#y(t-1) as the independant variable
+
+
+y = stationary_series["Plot"]
+y_lagged = stationary_series["Plot"].shift(1)
+
+dependent = y - y_lagged
+
+y_lagged.iloc[0] = y_lagged.iloc[1]
+dependent.iloc[0] = dependent.iloc[1]
+
+model_1 = least_sqaures_regression(dependent, add_constant(y_lagged))
+results_1 = model_1.fit()
+
+print(results_1.params)
+
+halflife = (-np.log(2)) / results_1.params[1]
+print(halflife)
+```
+
+Quite importantly, the half life of mean reversion also gives us significant insight as to what our lookback window values should be. Naturally this will not help with the rolling regression window lookback(if you where considering that) because the rolling regression is used to create the mean reverting series, and the halflife is a property of that created series.
+
+We can use the halflife to determine windows for our standard deviation calculation. The concept here is pretty intuative. If our mean reversion halflife is 20 days, we would not a standard deviation window < 20 days as that value for the standard deviation would be to sensitive. Naturally we would want our window to be k*20. Where k is some small multiple. Maybe we would want 60 or 80 days for a more robust sense of standard deviation (standard deviation covering 1 or more reversion to the mean).
 
 
 ## Standard Deviation
@@ -495,11 +522,40 @@ The important thing to consider here is the value N, this is the number of data 
 
 
 ## Standard Deviation - Linear Scaling
+How far the price deivates from the mean before it reverts is a variable to us. We have the standard deviation as a guideing light, but in we still have to decide how we are going to use it. One way to to linear scale into our portfolio as we deviate further from the mean. In order words to short our combination as we go further above the mean, and to continue to short if we keep getting further. Then to go long when we are below the mean, and keep going long as we remain below the mean. In other words to buy an amount relvative to our standard deviation.
+
+<img src="https://render.githubusercontent.com/render/math?math=portfolio = k*\sigma">
+where k is some constant scaling factor.
+
+The problem with this strategy is the captical usage. Like I said, the only thing we can be fairly confidence about is the fact the the price will mean revert, but the standard deviation from the mean at any given time is a variable. This means we could effectively get an infinite standard deviation, thus linear scaling requires (technically) inifite capital.
 
 ## Standard Deviation - Bollinger Bands
+To get around this issue we can use Bollinger bands. Which is just a set value for the standard deviation at which you will go long, or go short on the stock. For example is standard deviation is >=2 we go short, if it is <= -2 we go long. A simple entry and exit signal for our trades.
 
+
+```
+lookback = k*halflife
+
+moving_variance = np.zeros([len(average)]) 
+for i in range(lookback-1, len(moving_variance)):
+    moving_var = 0
+    
+    for loop in range(lookback):
+        moving_var += (stationary_plot["Plot"].iloc[i-loop] - average[i])**2 
+    
+    moving_var /= lookback
+    moving_variance[i] = moving_var
+
+moving_std = np.sqrt(moving_variance)
+```
+
+![Standard deviation plot](images/Standard%20deviation%20demo.png)
+
+Here we can see all the standard deviations of our stationary plot, usually we optimize our entry and exit standard deviation values on the data. But it is important to note that that can lead to data snooping bias in our model. So lets just pick some values based on this graph. 1.8 and -1.2 look like good starting values.
 
 # Testing with BackTrader
+To test our strategies with a simulated broker, I used backtrader you can find the code in the following file: backtest_ewc_ewa_pair_trade.py
+
 
 # Where do you come in?
 At this point it seems that the core principles behind mean reverting strategies all mostly the same. You might be thinking to yourself: So where does the induviduality come from, if any nerd can build a mean reverting strat, what seperates the winners from the losers? (OK first of all, bad mentality. We are all here to have fun :) ). I will take a few pages out of EP Chan's first book: Quantitative Trading, and give some insight into what to do from here on.
