@@ -555,6 +555,7 @@ Here we can see all the standard deviations of our stationary plot, usually we o
 # Testing with BackTrader
 To test our strategies with a simulated broker, I used backtrader you can find the code in the following file: backtest_ewc_ewa_pair_trade.py
 
+![Backtrader result](images/backtrader%20result.png)
 
 # Where do you come in?
 At this point it seems that the core principles behind mean reverting strategies all mostly the same. You might be thinking to yourself: So where does the induviduality come from, if any nerd can build a mean reverting strat, what seperates the winners from the losers? (OK first of all, bad mentality. We are all here to have fun :) ). I will take a few pages out of EP Chan's first book: Quantitative Trading, and give some insight into what to do from here on.
