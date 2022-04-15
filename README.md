@@ -376,7 +376,9 @@ print(eigen_vec[:,0])
 ```
 
 ```
-Output
+OUTPUT
+--------------------
+
 Index(['EWA', 'EWC'], dtype='object')
            EWA        EWC
 0    16.816011  22.219603
@@ -401,15 +403,75 @@ Eigen vals [0.0058672  0.00058403]
 [ 1.10610232 -0.55167024]
 ```
 
-There are a couple of important things to note about the Johasen test, and our data to understand why we get the above results.
+First, we note that the Johansen test comes with n trace stastics, one for each of the n time series we enter as inputs. This is because, as the Johansen test postulates, there are n ways that n unique time series can contingrate (not all them will produce a stationary time series). Second, we also need to notice that unlike the CADF test, the critical values for the Johansen test as printed in the order of 90% , 95% , 99% confidence (the reverse order of CADF). Therefore, both of our trace statsitics so not even come near to the 90% confidence interval, implying that these two time series do not cointegrate in any way.
+
+There a a couple of things to note about our data which give insight into why we got the following results for the Johansen test.
 
 1) The data is from 2019-2020 and as we can see from the linear regression model that there is not a good constant hedge ratio for such a long period of time
 2) The Johansen test assumes the hedge ratio is constant, becuase of this it is much less flexible than the Kalman filter/Rolling regression in terms of classifying regression
 3) Hedge ratios change over long periods of time
+4) The eigen vector gives us the hedge ratio in matrix form and in the order of the columns in your dataframe. So the ratio 1.10610232 : -0.55167024 represents EWA : EWC
    
 
 To these this hypothesis, we can simply shorten the time frame and see if the test gives us different results.
 
+```
+from statsmodels.tsa.vector_ar.vecm import coint_johansen as johansen_test
+
+input_data = pd.DataFrame()
+input_data["EWA"] = ewa[ewa["Date"] < datetime.datetime(2020, 4,9) ]["Open"]
+input_data["EWC"] = ewc[ewc["Date"] < datetime.datetime(2020, 4,9) ]["Open"]
+
+print(input_data.columns)
+
+print(input_data)
+
+jres = johansen_test(input_data, 0 , 1)
+
+trstat = jres.lr1                       # trace statistic
+tsignf = jres.cvt                       # critical values
+eigen_vec = jres.evec
+eigen_vals = jres.eig                  
+
+print("trace statistics", trstat)
+print("critical values", tsignf)
+print("Eigen vectors:", eigen_vec)
+print("Eigen vals",eigen_vals)
+print(eigen_vec[:,0])
+```
+
+```
+OUTPUT
+--------------------
+Index(['EWA', 'EWC'], dtype='object')
+           EWA        EWC
+0    16.816011  22.219603
+1    16.994619  22.632471
+2    17.208949  22.942117
+3    17.467934  23.111017
+4    17.735846  23.608328
+..         ...        ...
+315  13.992842  20.075173
+316  13.964949  20.411040
+317  14.513505  20.727711
+318  14.950492  22.109561
+319  14.606481  21.620158
+
+[320 rows x 2 columns]
+trace statistics [1.57732397e+01 9.27038992e-06]
+critical values [[13.4294 15.4943 19.9349]
+ [ 2.7055  3.8415  6.6349]]
+Eigen vectors: [[ 2.68227333 -1.40388234]
+ [-2.34546748  0.69904441]]
+Eigen vals [4.83912958e-02 2.91521691e-08]
+[ 2.68227333 -2.34546748]
+```
+
+Now for our revised test, we have taken a smaller time period as sample as to test our hypothesis as to why the first test yeild an conclusion of non-cointegration. Again we get n trace statstics for our n possible hedge ratios (ways of cointegration). We notice that trstat[0] is >>> it's 99% confidence interval critical value of 19.9, while   trstat[1] << its corresponding 90% confidence critcal value of 2.7. This tells us that the first set of eigen vectors is a hedge ratio that will yeild a cointegrating series, while the second set will not.
+
+The eigen vectors are not given as transposed lists. So 2.68 and -2.34 are the values of the first vector, and -1.40 and 0.699 are the values of the second.
+
+![Johasen Test Demo](images/Johansen%20Eigen%20value%20demo.png)
 
 
 
