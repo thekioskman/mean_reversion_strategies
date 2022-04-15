@@ -8,18 +8,18 @@
   - [Cointegration and Pair Trading with Mean Reversion](#cointegration-and-pair-trading-with-mean-reversion)
   - [Determining the Hedge Ratio - Linear Combination](#determining-the-hedge-ratio---linear-combination)
   - [Cointegrated Augmented Dicky Fuller Test](#cointegrated-augmented-dicky-fuller-test)
-  - [Johansen Test](#johansen-test)
   - [Linear Regression](#linear-regression)
   - [Linear Regression with Moving Window](#linear-regression-with-moving-window)
     - [A note of using Simple Moving Averages](#a-note-of-using-simple-moving-averages)
-  - [Johansen Test (Advanced)](#johansen-test-advanced)
   - [Kalman Filter (Advanced)](#kalman-filter-advanced)
     - [Lets compare Slope/Intercept from Kalman filter to Rolling regression](#lets-compare-slopeintercept-from-kalman-filter-to-rolling-regression)
+  - [Johansen Test (Advanced)](#johansen-test-advanced)
   - [Generating Entry and Exit Signals](#generating-entry-and-exit-signals)
   - [Half Life of Mean Reversion](#half-life-of-mean-reversion)
   - [Standard Deviation](#standard-deviation)
   - [Standard Deviation - Linear Scaling](#standard-deviation---linear-scaling)
   - [Standard Deviation - Bollinger Bands](#standard-deviation---bollinger-bands)
+- [Testing with BackTrader](#testing-with-backtrader)
 - [Where do you come in?](#where-do-you-come-in)
   - [Small Changes go a long way](#small-changes-go-a-long-way)
   - [Its the context and situation that make a strategy unique](#its-the-context-and-situation-that-make-a-strategy-unique)
@@ -231,13 +231,6 @@ Output
 ```
 Here we notice that our trace statistic is greater than the 99, 95 and 90% confidence interval values. A glance at the p-value (0.39) indicates that there is a ~39% change the null hypothesis is false. Which is not strong enough evidence to say that the two time series will conintegrate. This test is fast, but it really does not tell us much.
 
-## Johansen Test
-In practice, we always prefer the Johansen Test over the CADF test. The Johansen test can:
-1) Tell us if multiple (two or more) time series conintegrate
-2) It can also tell us the *constant* hedge ratios for all n time series we pass to it as inputs
-
-
-
 
 ## Linear Regression
 Another method we can use to get the hedge ratio between *two* stocks is to use a linear regression. The concept here is pretty simple, consider the following time series for the EWC and EWA ETF's. A quick CADF test tells us that they do conintegrate. We can verify this by plotting their time series values on a scatter plot, with EWC(t) on the x-axis, and EWA(t) on the y-axis.
@@ -265,12 +258,10 @@ slope = results.params[0]
 Calling results.params[0] gives us the slope value. However, you should consult the docs for the exact returns values. As your model might also spit out an intercept value.
 
 <br>
-<br>
 But you might have noticed something important. Our regression line really is not that good. You can see period where many data points are concentrated above the line, and other regions where they are clustered below the line. This issue wil be reflected in our resulting "stationary" time series.
 
 ## Linear Regression with Moving Window
 So the notion of a OLS Regression generating a constant hedge ratio was just a precursor to discussing the Rolling window Linear Regression(which will actually yield some decent results). The idea here is to treat the slope as a variable rather than a constant. Recall how I stated there are period where many values are above(or below) the line of best fit, and since the this regression line is fitted on ALL of the data it cannot account for regime shifts in the market and can quickly become outdated. Therefore, it makes logical sense to update out linear regression every so often. Then is pretty much was a rolling window OLS is. We are running a regression on a section of the data each time.
-<!--  -->
 ![Rolling Regression & Linear Regression Comparison](./images/Linear%20Regession%20Hedge%20Ratio%20Example.png)
 
 
@@ -288,47 +279,6 @@ slope_function_20
 
 
 ### A note of using Simple Moving Averages
-
-## Johansen Test (Advanced)
-Now let us consider the Johansen test, which will be useful when we want to the test the cointegration & get the hedge ratio of MULTIPLE(more than two) time series. We will not go into the mathematics of how it works as it is significantly more complicated than a linear regression.
-
-```
-#first we need to test whether the two stocks cointegrate using the Johansen test
-#This is how the johasen test works in statsmodels
-#johansen_test(input_data, deterministic order, number_lags) 
-#input_data = [df_time series 1, df_time series 2]
-gold_prices = pd.read_csv("Stock_data/GLD_daily.csv")
-oil_prices = pd.read_csv("Stock_data/USO_daily.csv")
-gold_prices["Date"] = pd.to_datetime(gold_prices['Date'])
-oil_prices["Date"] = pd.to_datetime(oil_prices['Date'])
-
-input_data = pd.DataFrame()
-input_data["GLD"] = gold_prices[gold_prices["Date"] > datetime.datetime(2007,1,1)]["Close"].reset_index(drop=True) 
-input_data["USO"] = oil_prices[oil_prices["Date"] > datetime.datetime(2007,1,1)]["Close"].reset_index(drop=True) 
-
-
-jres = johansen_test(input_data, 0 , 1)
-
-trstat = jres.lr1                       # trace statistic
-tsignf = jres.cvt                       # critical values
-eigen_vec = jres.evec
-eigen_ord = jres.ind                   
-
-print("Eigen vectors:", eigen_vec)
-print(eigen_ord)
-print(trstat)
-print(tsignf)
-```
-
-```
-Output
-Eigen vectors: [[ 0.03903416 -0.00707638]
- [ 0.00444021  0.00514214]]
-[0 1]
-[7.43610603 0.95822082]
-[[13.4294 15.4943 19.9349]
- [ 2.7055  3.8415  6.6349]]
-```
 
 
 ## Kalman Filter (Advanced)
@@ -377,6 +327,79 @@ One important thing to note first is that the Kalman filter also gives us an int
 ![Kalman vs Rolling Regression](/images/Linear%20Regression%20vs%20Kalman%20Filter.png)
 
 
+## Johansen Test (Advanced)
+In practice, we always prefer the Johansen Test over the CADF test.  The Johansen test can:
+1) Tell us if multiple (two or more) time series conintegrate
+2) It can also tell us the *constant* hedge ratios for all n time series we pass to it as inputs
+3) Not dynamic is nature as it assumes the hedge ratios are constant
+
+We will not go into the mathematics of how it works as it is significantly more complicated than linear regression. The key idea here however is that we can cointegrate and find the hedge ratio of more than two time series (which we could not do with our previous regression techniques).
+
+```
+import yfinance as yf
+from statsmodels.tsa.vector_ar.vecm import coint_johansen as johansen_test
+
+#Get the data for EWC and EWA
+ewc = yf.Ticker("EWC")
+ewa = yf.Ticker("EWA")
+
+ewc = ewc.history(start="2019-01-01" , end="2022-01-01")
+ewa = ewa.history(start="2019-01-01" , end="2022-01-01")
+
+input_data = pd.DataFrame()
+input_data["EWA"] = ewa["Open"]
+input_data["EWC"] = ewc["Open"]
+
+print(input_data.columns)
+
+
+print(input_data)
+
+jres = johansen_test(input_data, 0 , 1)
+
+trstat = jres.lr1                       # trace statistic
+tsignf = jres.cvt                       # critical values
+eigen_vec = jres.evec
+eigen_vals = jres.eig                  
+
+print("trace statistics", trstat)
+print("critical values", tsignf)
+print("Eigen vectors:", eigen_vec)
+print("Eigen vals",eigen_vals)
+print(eigen_vec[:,0])
+```
+
+```
+Output
+Index(['EWA', 'EWC'], dtype='object')
+           EWA        EWC
+0    16.816011  22.219603
+1    16.994619  22.632471
+2    17.208949  22.942117
+3    17.467934  23.111017
+4    17.735846  23.608328
+..         ...        ...
+752  24.663866  37.990002
+753  24.990999  38.330002
+754  24.990999  38.180000
+755  25.040001  38.189999
+756  24.760000  38.270000
+
+[757 rows x 2 columns]
+trace statistics [4.88385059 0.4410689 ]
+critical values [[13.4294 15.4943 19.9349]
+ [ 2.7055  3.8415  6.6349]]
+Eigen vectors: [[ 1.10610232 -0.55180587]
+ [-0.55167024  0.50269167]]
+Eigen vals [0.0058672  0.00058403]
+[ 1.10610232 -0.55167024]
+```
+
+
+
+
+
+
 ## Generating Entry and Exit Signals
 This is the part where we turn the math into an actual trading strategy. We need to translate our mathematic factors into indicators for the algorithm of how many shares of which stocks to buy or short. We will look at two very simple mathemicatical principles that can be useful in this process.
 
@@ -399,6 +422,8 @@ The important thing to consider here is the value N, this is the number of data 
 
 ## Standard Deviation - Bollinger Bands
 
+
+# Testing with BackTrader
 
 # Where do you come in?
 At this point it seems that the core principles behind mean reverting strategies all mostly the same. You might be thinking to yourself: So where does the induviduality come from, if any nerd can build a mean reverting strat, what seperates the winners from the losers? (OK first of all, bad mentality. We are all here to have fun :) ). I will take a few pages out of EP Chan's first book: Quantitative Trading, and give some insight into what to do from here on.
