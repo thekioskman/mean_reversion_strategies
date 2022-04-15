@@ -336,8 +336,9 @@ In practice, we always prefer the Johansen Test over the CADF test.  The Johanse
 We will not go into the mathematics of how it works as it is significantly more complicated than linear regression. The key idea here however is that we can cointegrate and find the hedge ratio of more than two time series (which we could not do with our previous regression techniques).
 
 ```
+DATA SPECS
+--------------------
 import yfinance as yf
-from statsmodels.tsa.vector_ar.vecm import coint_johansen as johansen_test
 
 #Get the data for EWC and EWA
 ewc = yf.Ticker("EWC")
@@ -345,6 +346,11 @@ ewa = yf.Ticker("EWA")
 
 ewc = ewc.history(start="2019-01-01" , end="2022-01-01")
 ewa = ewa.history(start="2019-01-01" , end="2022-01-01")
+
+```
+
+```
+from statsmodels.tsa.vector_ar.vecm import coint_johansen as johansen_test
 
 input_data = pd.DataFrame()
 input_data["EWA"] = ewa["Open"]
@@ -395,6 +401,14 @@ Eigen vals [0.0058672  0.00058403]
 [ 1.10610232 -0.55167024]
 ```
 
+There are a couple of important things to note about the Johasen test, and our data to understand why we get the above results.
+
+1) The data is from 2019-2020 and as we can see from the linear regression model that there is not a good constant hedge ratio for such a long period of time
+2) The Johansen test assumes the hedge ratio is constant, becuase of this it is much less flexible than the Kalman filter/Rolling regression in terms of classifying regression
+3) Hedge ratios change over long periods of time
+   
+
+To these this hypothesis, we can simply shorten the time frame and see if the test gives us different results.
 
 
 
