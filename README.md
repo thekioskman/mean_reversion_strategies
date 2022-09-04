@@ -277,9 +277,6 @@ slope_function_20
 ```
 
 
-### A note of using Simple Moving Averages
-
-
 ## Kalman Filter (Advanced)
 
 Again we will not go into the specifics about how the Kalman filter works. We will just learn how to analyze the results we are getting from it. The Kalman filter can be a whole conversation in and of itself. All we need to know is how to extract the following components from the filter. There are many different packages that provide a Kalman filter. I am using the pykalman package, although it is a little bit outdated. A good exercise would be to figure out how the Kalman filter works and try to implement one yourself.
